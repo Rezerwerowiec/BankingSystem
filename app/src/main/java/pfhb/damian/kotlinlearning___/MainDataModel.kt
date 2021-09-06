@@ -203,7 +203,7 @@ class Manager : GetDefault {
     fun loadDataFromContainerOfCredits(container : CreditDataContainer){
         for(user in container.container)
             listOfCredits.add(user)
-    }
+    }`
 
     fun getUserByName(name : String) : MainDataModel? {
         for(users in getListOfUsers()){
