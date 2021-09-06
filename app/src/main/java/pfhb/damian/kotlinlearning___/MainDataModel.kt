@@ -9,6 +9,7 @@ interface GetDefault {
 }
 
 data class MainDataModelContainer(var container: List<MainDataModel>)
+data class CreditDataContainer(var container : List<CreditData>)
 
 data class MainDataModel(private var name: String, private var cash: Float, private var password: String, private var pin: Int) : GetDefault{
     private val identity : String = "${(10..99).random()}-${(1000..9999).random()}-${(1000..9999).random()}"
@@ -70,6 +71,36 @@ class Manager : GetDefault {
 
     private var exitCode = ExitCode.OK
 
+    /*///////////////////////////////////////////////////////////////////////////////
+    *
+    *      PRIVATE FUNCTIONS HERE             //////////////////////////////////////
+    *
+    *///////////////////////////////////////////////////////////////////////////////
+    private fun getListOfUsers() : ArrayList<MainDataModel>{
+        return listOfUsers
+    }
+    private fun setListOfUsers(users : ArrayList<MainDataModel>){
+        this.listOfUsers = users
+    }
+    private fun addUserToListOfUsers(user : MainDataModel){
+        this.listOfUsers.add(user)
+    }
+
+    private fun getCreditInfo(credit : CreditData) :String{
+        return credit.getData()
+    }
+
+    private fun getUserToString(user : MainDataModel) : String{
+        val model : MainDataModel = user
+        return model.getData()
+    }
+
+    /*///////////////////////////////////////////////////////////////////////////////
+    *
+    *      PUBLIC FUNCTIONS HERE             //////////////////////////////////////
+    *
+    *///////////////////////////////////////////////////////////////////////////////
+
     fun getExitCode(): String {
         return super.getExitCode(exitCode.toString())
     }
@@ -79,9 +110,6 @@ class Manager : GetDefault {
         listOfCredits.add(cd)
     }
 
-    private fun getCreditInfo(credit : CreditData) :String{
-        return credit.getData()
-    }
 
     fun getUserCredits(user : MainDataModel) : List<CreditData>{
         val list = arrayListOf<CreditData>()
@@ -108,10 +136,6 @@ class Manager : GetDefault {
         return mdm
     }
 
-    private fun getUserToString(user : MainDataModel) : String{
-        val model : MainDataModel = user
-        return model.getData()
-    }
 
     fun makeTransaction(sender: MainDataModel, receiver: MainDataModel, pwd_sender : String, amount: Float) : Boolean {
         if(sender.checkForPassword(pwd_sender)){
@@ -173,15 +197,12 @@ class Manager : GetDefault {
             listOfUsers.add(user)
     }
 
-
-    private fun getListOfUsers() : ArrayList<MainDataModel>{
-        return listOfUsers
+    fun getContainerOfCredits() : CreditDataContainer{
+        return CreditDataContainer(listOfCredits)
     }
-    private fun setListOfUsers(users : ArrayList<MainDataModel>){
-        this.listOfUsers = users
-    }
-    private fun addUserToListOfUsers(user : MainDataModel){
-        this.listOfUsers.add(user)
+    fun loadDataFromContainerOfCredits(container : CreditDataContainer){
+        for(user in container.container)
+            listOfCredits.add(user)
     }
 
     fun getUserByName(name : String) : MainDataModel? {

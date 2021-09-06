@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.GsonBuilder
 
@@ -15,32 +14,45 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         ModelPreferencesManager.with(this)
-        val resultView = findViewById<TextView>(R.id.resultView)
+        loadData()
 
-//        loadData()
-        val user1 = manager.newUser("Johny", 1200.35F, "j0hny", 3355)
-//        val user2 =manager.newUser("Thomas", 200.30F, "Th0m@s", 3356)
-//
-//        val isSuccess = manager.makeTransaction(user1, user2, "j0hny", 500f)
-//        if(!isSuccess) Toast.makeText(baseContext, manager.getExitCode(), Toast.LENGTH_LONG).show()
-//        saveData()
-//        resultView.text = manager.getAllUsersToString()
-
+        val user1 = manager.getUserByName("Johny") ?: return
         manager.newCredit(user1, 10000f, 12, 6.5f)
         manager.newCredit(user1, 1000f, 3, 4.5f)
+        creditInfo(user1)
+        userInfo(user1)
+        saveData()
 
-        resultView.text = manager.getCreditInfoFromList(manager.getUserCredits(user1))
     }
+
+    private fun creditInfo(user : MainDataModel){
+        val creditView = findViewById<TextView>(R.id.creditInfo)
+        creditView.text = manager.getCreditInfoFromList(manager.getUserCredits(user))
+    }
+
+    private fun userInfo(user: MainDataModel){
+        val resultView = findViewById<TextView>(R.id.resultView)
+
+
+        resultView.text = user.getData()
+
+    }
+
 
     private fun loadData(){
         val container = ModelPreferencesManager.get<MainDataModelContainer>("KEY_CONTAINER")
         if (container != null) {
             manager.loadDataFromContainerOfData(container)
         }
+        val creditContainer = ModelPreferencesManager.get<CreditDataContainer>("KEY_CONTAINERCREDITS")
+        if (creditContainer != null) {
+            manager.loadDataFromContainerOfCredits(creditContainer)
+        }
     }
 
     private fun saveData(){
         ModelPreferencesManager.put(manager.getContainerOfData(), "KEY_CONTAINER")
+        ModelPreferencesManager.put(manager.getContainerOfCredits(), "KEY_CONTAINERCREDITS")
     }
 }
 
