@@ -12,6 +12,7 @@ const char DELIMITER = '|';
 const char ACCOUNT_DELIMITER = ',';
 const char ACCOUNT_FIELD_DELIMITER = ';';
 const char CUSTOMER_DELIMITER = '\n';
+const std::string SAVE_LOCATION = "banksystem.csv";
 
 // Global counter for generating unique account IDs
 int globalAccountIdCounter = 0;
@@ -36,10 +37,10 @@ public:
     }
 
     // Method to save data to file
-    void saveToFile(const std::string& filename) const;
+    void saveToFile() const;
 
     // Method to load data from file
-    void loadFromFile(const std::string& filename);
+    void loadFromFile();
 
     // Additional methods for managing customers and accounts
     Customer* getCustomerById(int customerId) const;
@@ -121,7 +122,8 @@ public:
 };
 
 // Bank methods implementation
-void Bank::saveToFile(const std::string& filename) const {
+void Bank::saveToFile() const {
+    const std::string& filename = SAVE_LOCATION;
     std::ofstream outFile(filename);
     if (outFile.is_open()) {
         for (const auto& cust : customers) {
@@ -139,7 +141,8 @@ void Bank::saveToFile(const std::string& filename) const {
     }
 }
 
-void Bank::loadFromFile(const std::string& filename) {
+void Bank::loadFromFile() {
+    const std::string& filename = SAVE_LOCATION;
     std::ifstream inFile(filename);
     if (inFile.is_open()) {
         std::string line;
@@ -320,13 +323,13 @@ int main() {
     // Initiate Bank object
     Bank bank;
     // Load data from file
-    bank.loadFromFile("banksystem.csv");
+    bank.loadFromFile();
 
     // Display menu for bank operator
     bank.displayMenu();
 
     // Save all changes
-    bank.saveToFile("banksystem.csv");
+    bank.saveToFile();
 
     // Exit program
     return 0;
